@@ -44,7 +44,7 @@
       function renderXAxis() {
         var xAxis = d3
           .axisBottom()
-          .ticks(5)
+          .ticks(lawfulness.length)
           .tickFormat(t => {
             return lawfulness[t];
           })
@@ -72,7 +72,7 @@
       function renderYAxis() {
         var yAxis = d3
           .axisLeft()
-          .ticks(5)
+          .ticks(goodness.length)
           .tickFormat(t => {
             return goodness[t];
           })
