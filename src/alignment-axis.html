@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Axis Grid Lines</title>
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css" />
+    <script type="text/javascript" src="../node_modules/d3/dist/d3.js"></script>
+  </head>
+
+  <body>
+    <script type="text/javascript">
+      var height = 800,
+        width = 800,
+        margin = 150,
+        min = 0,
+        max = 4,
+        lawfulness = ["Lawful", "Orderly", "Neutral", "Whimsical", "Chaotic"],
+        goodness = ["Good", "Wholesome", "Neutral", "Naughty", "Evil"];
+
+      var svg = d3
+        .select("body")
+        .append("svg")
+        .attr("class", "axis")
+        .attr("width", width)
+        .attr("height", height);
+
+      var yAxisLength = height - 2 * margin,
+        xAxisLength = width - 2 * margin;
+
+      var xScale = d3
+          .scaleLinear()
+          .domain([min, max])
+          .range([0, xAxisLength]),
+        yScale = d3
+          .scaleLinear()
+          .domain([max, min])
+          .range([0, yAxisLength]);
+
+      function renderXAxis() {
+        var xAxis = d3
+          .axisBottom()
+          .ticks(5)
+          .tickFormat(t => {
+            return lawfulness[t];
+          })
+          .scale(xScale);
+
+        svg
+          .append("g")
+          .attr("class", "x-axis")
+          .attr("transform", function() {
+            return "translate(" + margin + "," + (height - margin) + ")";
+          })
+          .attr("opacity", 1)
+          .call(xAxis);
+
+        d3.selectAll("g.x-axis g.tick") // <-B
+          .append("line") // <-C
+          .classed("grid-line", true)
+          .attr("x1", 0) // <-D
+          .attr("y1", 0)
+          .attr("x2", 0)
+          .attr("y2", -(height - 2 * margin))
+          .attr("opacity", 0.4); // <-E
+      }
+
+      function renderYAxis() {
+        var yAxis = d3
+          .axisLeft()
+          .ticks(5)
+          .tickFormat(t => {
+            return goodness[t];
+          })
+          .scale(yScale);
+
+        svg
+          .append("g")
+          .attr("class", "y-axis")
+          .attr("transform", function() {
+            return "translate(" + margin + "," + margin + ")";
+          })
+          .call(yAxis);
+
+        d3.selectAll("g.y-axis g.tick")
+          .append("line")
+          .classed("grid-line", true)
+          .attr("x1", 0)
+          .attr("y1", 0)
+          .attr("x2", yAxisLength) // <-F
+          .attr("y2", 0);
+      }
+
+      var colorscaleX = d3
+        .scaleLinear()
+        .domain([min, max])
+        .interpolate(d3.interpolateHcl)
+        .range([d3.rgb("#0000ff"), d3.rgb("#8B0000")]);
+
+      function renderPoint(x, y) {
+        svg
+          .append("circle") // <-B
+          .attr("transform", function() {
+            return "translate(" + margin + "," + margin + ")";
+          })
+          .attr("cx", xScale(x))
+          .attr("cy", yScale(y))
+          .attr("fill", colorscaleX((x + y) / 2))
+          .attr("r", 10);
+      }
+
+      renderYAxis();
+      renderXAxis();
+      for (var i = min; i <= max; i++) renderPoint(i, i);
+    </script>
+  </body>
+</html>
