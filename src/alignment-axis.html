@@ -35,7 +35,7 @@
           .scaleLinear()
           .domain([max, min])
           .range([0, yAxisLength]),
-        colorscaleX = d3
+        colorscale = d3
           .scaleLinear()
           .domain([min, max])
           .interpolate(d3.interpolateHcl)
@@ -93,7 +93,7 @@
           .attr("y1", 0)
           .attr("x2", yAxisLength) // <-F
           .attr("y2", 0)
-          .attr("fill", colorscaleX(0));
+          .attr("fill", colorscale(0));
       }
 
       function renderPoint(x, y) {
@@ -104,7 +104,7 @@
           })
           .attr("cx", xScale(x))
           .attr("cy", yScale(y))
-          .attr("fill", colorscaleX((x + y) / 2))
+          .attr("fill", colorscale((x + y) / 2))
           .attr("r", 10);
       }
 
